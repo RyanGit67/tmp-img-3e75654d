@@ -1,0 +1,20 @@
+name: decode
+on:
+  workflow_dispatch:
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: decode and commit jpegs
+        run: |
+          set -euo pipefail
+          for f in part*.tar.b64; do base64 -d "$f" | tar x; git rm -q "$f"; done
+          ls -la *.jpg
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add jyn*.jpg
+          git commit -m "add jiayuan_new images"
+          git push
